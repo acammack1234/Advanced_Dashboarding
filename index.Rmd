@@ -2,10 +2,13 @@
 title: "Advanced Dashboarding"
 output: 
   flexdashboard::flex_dashboard:
-    orientation: columns
+    orientation: row    # or column
     vertical_layout: fill
     social: ["menu"]
     source_code: embed
+    theme:
+      version: 4
+      bootswatch: sandstone # a preset CSS style, bootswatch.com
 ---
 
 ```{r setup, include=FALSE}
@@ -19,10 +22,49 @@ library(DT) # "DataTable" for interactive tables
 data("penguins") # start typing penguins on next line to get the <Promise> to convert to dataframes
 ```
 
-Plots
+<!-- Anything above the first page header doesn't get included in the dashboard -->
+
+Plots {data-navmenu="Pages"}  <!-- No spaces! This nests pages under a common name -->
 =======================================================================
 
-Column {data-width=650}
+<!-- Always have a blank line after row separators -->
+
+Sidebar {.sidebar}
+-----------------------------------------------------------------------
+
+### Penguin Stats
+
+The number of penguins in the data is `r nrow(penguins)`.
+
+New comment!
+
+Row
+-----------------------------------------------------------------------
+
+### Number of penguins
+
+```{r}
+valueBox(nrow(penguins), icon = "fa-linux") # from font awesom
+# see fontawesome.com for tons of fonts and icons
+```
+
+
+<!-- Use this to add a comment (html style) -->
+
+### Avg body mass
+
+```{r}
+avg_mass = round(mean(penguins$body_mass_g, na.rm = T), 1)
+
+gauge(avg_mass,
+      min(0),
+      max(penguins$body_mass_g, na.rm = T),
+      gaugeSectors(success = c(4000, 6300),
+                   warning = c(2000, 3999),
+                   danger = c(0, 1999)))
+```
+
+Column {.tabset}
 -----------------------------------------------------------------------
 
 ### Scatterplot of bill length vs bill depth
@@ -35,7 +77,6 @@ ggplotly(a)
 ```
 
 Column {data-width=350}
------------------------------------------------------------------------
 
 ### Chart B
 
@@ -52,7 +93,7 @@ penguins %>% ggplot(aes(x = flipper_length_mm, fill = species))+
   facet_wrap(~species)
 ```
 
-Data
+Data {data-navmenu="Pages"}
 ==============================================================================
 
 ```{r}
