@@ -1,0 +1,68 @@
+---
+title: "Advanced Dashboarding"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation: columns
+    vertical_layout: fill
+    social: ["menu"]
+    source_code: embed
+---
+
+```{r setup, include=FALSE}
+# In the YAML above, spaces matter!
+library(flexdashboard)
+library(tidyverse)
+library(palmerpenguins)
+library(fontawesome) # free icons to use in RMD document
+library(plotly) # interactive plots
+library(DT) # "DataTable" for interactive tables
+data("penguins") # start typing penguins on next line to get the <Promise> to convert to dataframes
+```
+
+Plots
+=======================================================================
+
+Column {data-width=650}
+-----------------------------------------------------------------------
+
+### Scatterplot of bill length vs bill depth
+
+```{r}
+a <- penguins %>% ggplot(aes(x = bill_length_mm, y = bill_depth_mm, color = species)) +
+  geom_point()# after "x =" hit tab for variables to show up
+ggplotly(a)
+# htmlwidgets.org has all kinds of amazing plots to use in dashboards
+```
+
+Column {data-width=350}
+-----------------------------------------------------------------------
+
+### Chart B
+
+```{r}
+penguins %>% ggplot(aes(x = body_mass_g, y = sex, fill = sex))+
+  geom_boxplot()
+```
+
+### Chart C
+
+```{r}
+penguins %>% ggplot(aes(x = flipper_length_mm, fill = species))+
+  geom_histogram(bins=30) +
+  facet_wrap(~species)
+```
+
+Data
+==============================================================================
+
+```{r}
+penguins %>% datatable(extensions = "Buttons",
+                       options = list(dom = "Blfrtip",
+                                      buttons = c("copy", "csv", "excel", "pdf", "print")))  # datatable from DT package  
+# l = length
+# p = pagination (ability to go from page 1 to page 2)
+# B = add buttons
+# default is lfrtip
+# datatables.net has all the options to customize your html table
+```
+
